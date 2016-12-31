@@ -125,10 +125,10 @@ package ssmit
 			var topTC:Number = TextureList.PADDING / texture.height;
 			var rightTC:Number = ( texture.width - TextureList.PADDING ) / texture.width;
 			var bottomTC:Number = ( texture.height - TextureList.PADDING ) / texture.height;
-			image.setTexCoords( 0, new Point(  leftTC,    topTC ) );
-			image.setTexCoords( 1, new Point( rightTC,    topTC ) );
-			image.setTexCoords( 2, new Point(  leftTC, bottomTC ) );
-			image.setTexCoords( 3, new Point( rightTC, bottomTC ) );
+			image.setTexCoords( 0, leftTC,     topTC  );
+			image.setTexCoords( 1, rightTC,    topTC  );
+			image.setTexCoords( 2, leftTC,  bottomTC  );
+			image.setTexCoords( 3, rightTC, bottomTC  );
 			
 			return image;
 		}

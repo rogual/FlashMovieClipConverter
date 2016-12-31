@@ -8,6 +8,7 @@ package ssmit
 	import flash.display.Shape;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
+	import flash.geom.Point;
 	import flash.utils.Dictionary;
 	
 	import starling.animation.IAnimatable;
@@ -317,20 +318,25 @@ package ssmit
 		}
 		
 		
+		private static function setTexCoords( image: Image, index: int, coords: Point ): void
+		{
+			image.setTexCoords( index, coords.x, coords.y );
+		}
+
+
 		// Creates a copy of a child image.  The texture is not duplicated.
 		private static function cloneImage( image:Image ) : Image
 		{
 			var newImage:Image = new Image( image.texture );
-			newImage.setTexCoords( 0, image.getTexCoords( 0 ) );
-			newImage.setTexCoords( 1, image.getTexCoords( 1 ) );
-			newImage.setTexCoords( 2, image.getTexCoords( 2 ) );
-			newImage.setTexCoords( 3, image.getTexCoords( 3 ) );
+			setTexCoords( newImage, 0, image.getTexCoords( 0 ) );
+			setTexCoords( newImage, 1, image.getTexCoords( 1 ) );
+			setTexCoords( newImage, 2, image.getTexCoords( 2 ) );
+			setTexCoords( newImage, 3, image.getTexCoords( 3 ) );
 			
 			newImage.name = image.name;
 			newImage.transformationMatrix.copyFrom( image.transformationMatrix );
 			newImage.alpha = image.alpha;
 			newImage.blendMode = image.blendMode;
-			newImage.smoothing = image.smoothing;
 			
 			return newImage;
 		}

@@ -98,10 +98,10 @@ package ssmit
 					var topTC:Number = TextureList.PADDING / bitmapInfo._bitmapData.height;
 					var rightTC:Number = ( TextureList.PADDING + displayObject.width ) / bitmapInfo._bitmapData.width;
 					var bottomTC:Number = ( TextureList.PADDING + displayObject.height ) / bitmapInfo._bitmapData.height;
-					image.setTexCoords( 0, new Point(  leftTC,    topTC ) );
-					image.setTexCoords( 1, new Point( rightTC,    topTC ) );
-					image.setTexCoords( 2, new Point(  leftTC, bottomTC ) );
-					image.setTexCoords( 3, new Point( rightTC, bottomTC ) );
+					image.setTexCoords( 0,   leftTC,    topTC  );
+					image.setTexCoords( 1,  rightTC,    topTC  );
+					image.setTexCoords( 2,   leftTC, bottomTC  );
+					image.setTexCoords( 3,  rightTC, bottomTC  );
 					
 					// Textures don't have offsets, so the image must be translated to compensate.
 					var objectRect:Rectangle = displayObject.getRect( displayObject );
