@@ -158,22 +158,6 @@ package ssmit
 		}
 		
 		
-		// Calls Sprite.flatten() on all children, excluding child ConvertedMovieClips, recursively.
-		// Can improve performance.
-		public function flattenChildren() : void
-		{
-			for( var i:int=0; i<numChildren; ++i )
-			{
-				var child:DisplayObject = getChildAt( i );
-				
-				if( child is ConvertedMovieClip )
-					ConvertedMovieClip(child).flattenChildren();
-				else if( child is Sprite )
-					Sprite(child).flatten();
-			}
-		}
-		
-		
 		// Update all the class vars regarding current scene and label, according to the _globalFrame.
 		private function updateSceneInfo() : void
 		{
