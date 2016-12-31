@@ -104,9 +104,9 @@ package ssmit
 					image.setTexCoords( 3,  rightTC, bottomTC  );
 					
 					// Textures don't have offsets, so the image must be translated to compensate.
-					var objectRect:Rectangle = displayObject.getRect( displayObject );
-					image.x = displayObject.x + objectRect.left;
-					image.y = displayObject.y + objectRect.top;
+					var objectRect:Rectangle = displayObject.getRect( displayObject.parent );
+					image.x = objectRect.left;
+					image.y = objectRect.top;
 					
 					// Add the new image to the list of images that use this bitmap.
 					if( bitmapInfo._imageList == null )
