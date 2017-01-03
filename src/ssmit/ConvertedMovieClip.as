@@ -90,6 +90,7 @@ package ssmit
 			// Shallow copy this stuff.
 			newMovieClip.name = name;
 			newMovieClip.transformationMatrix.copyFrom( transformationMatrix );
+			newMovieClip.transformationMatrix = newMovieClip.transformationMatrix;
 			newMovieClip.alpha = alpha;
 			newMovieClip.blendMode = blendMode;
 			newMovieClip.frameRate = frameRate;
