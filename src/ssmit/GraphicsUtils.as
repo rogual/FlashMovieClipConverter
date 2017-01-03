@@ -11,8 +11,8 @@ package ssmit
 	{
 		public static function getBitmapCRC(bitmapData: flash.display.BitmapData): uint
 		{
-			var w: uint = Math.min(bitmapData.width, 100);
-			var h: uint = Math.min(bitmapData.height, 100);
+			var w: uint = Math.min(bitmapData.width, 1000);
+			var h: uint = Math.min(bitmapData.height, 1000);
 			return CRC.getCRC(
 				bitmapData.getPixels(
 					new Rectangle(0, 0, w, h)
