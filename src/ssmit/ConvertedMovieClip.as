@@ -107,21 +107,28 @@ package ssmit
 		// The parent Juggler calls this.  Advances the frames of this, and all child ConvertedMovieClips.
 		public function advanceTime( time:Number ) : void
 		{
-			if( _isPlaying )
+			if( _isPlaying && frameRate != 0)
 			{
 				// Advance the frame based on the frame rate.
 				var targetFrame:int = _globalFrame;
-				var frameDuration:Number = 1 / frameRate;
+				var frameDuration:Number = 1 / Math.abs(frameRate);
+				var direction:int = frameRate > 0 ? 1 : -1;
 				_frameTime += time;
 				while( _frameTime >= frameDuration )
 				{
-					++targetFrame;
+					targetFrame += direction;
 					if( targetFrame > _lastSceneFrame )
 					{
 //						if( loop )
 							targetFrame = _firstSceneFrame;
 //						else
 //							targetFrame = _lastSceneFrame;
+					}
+					else if ( targetFrame < _firstSceneFrame ) {
+//						if( loop )
+							targetFrame = _lastSceneFrame;
+//						else
+//							targetFrame = _firstSceneFrame;
 					}
 					_frameTime -= frameDuration;
 				}
