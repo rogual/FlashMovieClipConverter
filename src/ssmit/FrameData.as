@@ -80,6 +80,8 @@ package ssmit
 					}
 					
 					objectFrameData.flashObject = child;
+					objectFrameData.graphicsCRC = frameData.getCRC(child);
+
 					objectFrameData.transformationMatrix = new Matrix();
 					objectFrameData.transformationMatrix.copyFrom( child.transform.matrix );
 					if( child is Shape || child is Bitmap )
@@ -99,7 +101,10 @@ package ssmit
 			for( frame=frameData._frameList.length-1; frame>=0; --frame )
 			{
 				for each( objectFrameData in frameData._frameList[ frame ] )
+				{
 					objectFrameData.flashObject = null;
+					objectFrameData.graphicsCRC = 0;
+				}
 			}
 			
 			// Reset the original movie clip, just in case.
@@ -110,21 +115,50 @@ package ssmit
 		
 		
 		// finds an existing ObjectFrameData in prior frames, given a Flash DisplayObject.
-		private function findObjectFrameData( object:flash.display.DisplayObject ) : ObjectFrameData
+		private function findObjectFrameData( object:flash.display.DisplayObject, ignoreCRC: Boolean = false ) : ObjectFrameData
 		{
+			var graphicsCRC: uint = ignoreCRC ? 0 : getCRC(object);
 			for( var frame:int=_frameList.length-1; frame>=0; --frame )
 			{
 				for each( var frameData:ObjectFrameData in _frameList[ frame ] )
 				{
-					if( frameData != null && frameData.flashObject === object )
+					if (
+						frameData != null &&
+							frameData.flashObject === object &&
+							(ignoreCRC || frameData.graphicsCRC === graphicsCRC)
+					)
 						return frameData;
 				}
 			}
-			
 			return null;
 		}
 		
 		
+		private function getCRC(object: flash.display.DisplayObject): uint
+		{
+			if (!(object is flash.display.Shape))
+				return 0;
+
+			var parentClip: flash.display.MovieClip = (object.parent as flash.display.MovieClip);
+			if (!parentClip)
+				return 0;
+
+			if (!findObjectFrameData(object, true))
+				return 0;
+
+			var m: Matrix = object.transform.matrix;
+			if (m.tx != 0 ||
+				m.ty != 0 ||
+				m.a != 1 ||
+				m.b != 0 ||
+				m.c != 0 ||
+				m.d != 1)
+				return 0;
+
+			return GraphicsUtils.getCRC(object);
+		}
+
+
 		// Imports frame data from xml.
 		internal static function importFromXML( xml:XML, objects:Vector.<DisplayObject> ) : FrameData
 		{
@@ -452,6 +486,8 @@ internal final class ObjectFrameData
 	public var xmlObject			: XML;
 	public var cloneSource			: starling.display.DisplayObject;
 	
+	public var graphicsCRC : uint
+
 	public function dispose() : void
 	{
 		name = null;

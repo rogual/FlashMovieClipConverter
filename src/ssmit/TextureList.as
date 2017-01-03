@@ -47,10 +47,11 @@ package ssmit
 			matrix.d = displayObject.transform.matrix.d;
 
 			var bitmapData:BitmapData = new BitmapData( Math.ceil(displayObject.width) + (PADDING*2), Math.ceil(displayObject.height) + (PADDING*2), true, 0x00000000 );	// Assume transparency on everything.
+
 			bitmapData.draw( displayObject, matrix );
 			
 			// Generate a CRC for the bitmap. (Could use MD5 here, but it's super slow... and the chances of a collision are pretty low.)
-			var crc:uint = CRC.getCRC( bitmapData.getPixels( new Rectangle( 0, 0, Math.min( bitmapData.width, 100 ), Math.min( bitmapData.height, 100 ) ) ) ); 
+			var crc:uint = GraphicsUtils.getBitmapCRC(bitmapData);
 			
 			// Check if this bitmap has already been added..
 			var info:BitmapInfo = findBitmapInfo( bitmapData.width, bitmapData.height, crc );
@@ -65,13 +66,34 @@ package ssmit
 				info = new BitmapInfo();
 				info._bitmapData = bitmapData;
 				info._crc = crc;
-				info._name = displayObject.name.slice();
+			        info._name = createBitmapInfoName(displayObject.name);
+
 				_bitmapInfoList.push( info );
 			}
 			
 			return info;
 		}
 		
+		private function createBitmapInfoName(displayObjectName: String): String
+		{
+			var infoName: String = displayObjectName.slice();
+			var index: uint = 0;
+
+			while (hasBitmapInfoNamed(infoName)) {
+				index += 1;
+				infoName = displayObjectName + "$" + index;
+			}
+			return infoName;
+		}
+
+		private function hasBitmapInfoNamed(name: String): Boolean
+		{
+			for each (var bitmapInfo: BitmapInfo in _bitmapInfoList)
+				if (bitmapInfo._name == name)
+					return true;
+			return false;
+		}
+
 		
 		// Finds an existing bitmap given the width, height, and CRC.
 		private function findBitmapInfo( width:int, height:int, crc:uint ) : BitmapInfo
@@ -153,52 +175,5 @@ package ssmit
 			
 			return bitmaps;
 		}
-	}
-}
-
-
-import flash.utils.ByteArray;
-
-
-// Utility class to calculate a CRC.
-internal class CRC
-{
-	private static var _table	: Vector.<uint>;
-	
-	// Magic.
-	private static function makeTable() : void
-	{
-		_table = new Vector.<uint>( 256, true );
-		for( var i:int=0; i<256; ++i )
-		{
-			var c:uint = i;
-			for( var j:int=8; j>=0; --j )
-			{
-				if( (c&1) != 0 )
-					c = 0xedb88320 ^ (c >>> 1);
-				else
-					c >>>= 1;
-			}
-			_table[ i ] = c;
-		}
-	}
-	
-	// Calculates the CRC of a ByteArray.
-	public static function getCRC( byteArray:ByteArray ) : uint
-	{
-		if( _table == null )
-			makeTable();
-		
-		var crc:uint = 0;
-		var index:uint = 0;
-		var c:uint = ~crc;
-		for( var i:int=byteArray.length; i>=0; --i )
-		{
-			c = _table[ (c ^ byteArray[index]) & 0xff ] ^ (c >>> 8);
-			++index;
-		}
-		crc = ~c;
-
-		return crc;
 	}
 }
