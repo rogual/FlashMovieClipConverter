@@ -83,14 +83,7 @@ package ssmit
 					objectFrameData.graphicsCRC = frameData.getCRC(child);
 
 					objectFrameData.transformationMatrix = new Matrix();
-					objectFrameData.transformationMatrix.copyFrom( child.transform.matrix );
-					if( child is Shape || child is Bitmap )
-					{
-						// Child will be converted to a texture, compensate with offset.
-						var childRect:Rectangle = child.getRect( child );
-						objectFrameData.transformationMatrix.tx += childRect.left;
-						objectFrameData.transformationMatrix.ty += childRect.top;
-					}
+					objectFrameData.transformationMatrix.copyFrom( objectFrameData.starlingObject.transformationMatrix );
 					objectFrameData.alpha = child.alpha;
 					
 					frameData._frameList[ frame-1 ][ i ] = objectFrameData;
